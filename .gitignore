@@ -1,3 +1,4 @@
 data/**
 node_modules/
+docs/**
 .beads/.local_version
