@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "build": "echo 'Build script not implemented yet'"
+    "build": "node scripts/build.js"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

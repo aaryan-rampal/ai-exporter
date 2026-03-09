@@ -93,11 +93,9 @@ function isValidMarkdown(markdown) {
   return hasUserHeading || hasAssistantHeading;
 }
 
-// Export for module systems
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    renderMarkdown,
-    toFileName,
-    isValidMarkdown
-  };
-}
+// ES module exports
+export {
+  renderMarkdown,
+  toFileName,
+  isValidMarkdown
+};

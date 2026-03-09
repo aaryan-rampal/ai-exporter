@@ -18,9 +18,7 @@ describe('ChatGPT Extractor', () => {
   before(() => {
     const html = readFileSync(fixturePath, 'utf-8');
     dom = new JSDOM(html, {
-      url: 'https://chatgpt.com/c/test-conversation',
-      runScripts: 'dangerously',
-      resources: 'usable'
+      url: 'https://chatgpt.com/c/test-conversation'
     });
     window = dom.window;
     document = window.document;

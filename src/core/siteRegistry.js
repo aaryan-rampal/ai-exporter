@@ -1,5 +1,5 @@
 // Site Registry
-// Maps hostnames to their respective extractors for extensibility
+// Maps hostnames to extractors.
 
 /**
  * @typedef {Object} ExtractorResult
@@ -15,10 +15,14 @@
  * @property {() => ExtractorResult} extract
  */
 
-// Registry of extractors by hostname
-const registry = {
-  // ChatGPT extractor will be registered here
-};
+const registry = Object.create(null);
+
+function normalizeHostname(hostname) {
+  if (typeof hostname !== 'string') {
+    return '';
+  }
+  return hostname.trim().toLowerCase();
+}
 
 /**
  * Register an extractor for a hostname
@@ -26,7 +30,11 @@ const registry = {
  * @param {() => ExtractorResult} extractor
  */
 function registerExtractor(hostname, extractor) {
-  registry[hostname] = extractor;
+  const normalized = normalizeHostname(hostname);
+  if (!normalized || typeof extractor !== 'function') {
+    return;
+  }
+  registry[normalized] = extractor;
 }
 
 /**
@@ -35,14 +43,20 @@ function registerExtractor(hostname, extractor) {
  * @returns {(() => ExtractorResult) | null}
  */
 function resolveExtractor(hostname) {
+  const normalized = normalizeHostname(hostname);
+
+  if (!normalized) {
+    return null;
+  }
+
   // Exact match
-  if (registry[hostname]) {
-    return registry[hostname];
+  if (registry[normalized]) {
+    return registry[normalized];
   }
 
   // Check for subdomain matches (e.g., www.chatgpt.com)
   for (const registeredHost of Object.keys(registry)) {
-    if (hostname === registeredHost || hostname.endsWith('.' + registeredHost)) {
+    if (normalized === registeredHost || normalized.endsWith('.' + registeredHost)) {
       return registry[registeredHost];
     }
   }
@@ -67,21 +81,10 @@ function getSupportedHosts() {
   return Object.keys(registry);
 }
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    registerExtractor,
-    resolveExtractor,
-    isSupported,
-    getSupportedHosts,
-    registry
-  };
-} else if (typeof window !== 'undefined') {
-  window.SiteRegistry = {
-    registerExtractor,
-    resolveExtractor,
-    isSupported,
-    getSupportedHosts,
-    registry
-  };
-}
+export {
+  registerExtractor,
+  resolveExtractor,
+  isSupported,
+  getSupportedHosts,
+  registry
+};
